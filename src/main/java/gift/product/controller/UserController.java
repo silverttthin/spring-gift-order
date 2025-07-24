@@ -1,10 +1,7 @@
 package gift.product.controller;
 
 
-import gift.product.dto.CreateUserRequest;
-import gift.product.dto.GetKakaoTokenResponse;
-import gift.product.dto.LoginRequest;
-import gift.product.dto.LoginResponse;
+import gift.product.dto.*;
 import gift.product.service.KakaoService;
 import gift.product.service.UserService;
 import org.springframework.web.bind.annotation.*;
