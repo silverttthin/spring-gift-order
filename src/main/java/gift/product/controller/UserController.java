@@ -2,13 +2,12 @@ package gift.product.controller;
 
 
 import gift.product.dto.CreateUserRequest;
+import gift.product.dto.GetKakaoTokenResponse;
 import gift.product.dto.LoginRequest;
 import gift.product.dto.LoginResponse;
+import gift.product.service.KakaoService;
 import gift.product.service.UserService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -16,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
 	private final UserService userService;
+	private final KakaoService kakaoService;
 
-	public UserController(UserService userService) {
+	public UserController(UserService userService, KakaoService kakaoService) {
 		this.userService = userService;
+		this.kakaoService = kakaoService;
 	}
 
 	@PostMapping("/register")
@@ -31,6 +32,9 @@ public class UserController {
 		return userService.login(req);
 	}
 
-
+	@GetMapping("/kakao-token")
+	public GetKakaoTokenResponse getKakaoToken(@RequestParam String code) {
+		return kakaoService.getKakaoToken(code);
+	}
 
 }
