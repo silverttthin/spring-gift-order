@@ -2,14 +2,8 @@ package gift.product.service;
 
 
 import gift.product.dto.CreateOrderRequest;
-import gift.product.entity.Option;
-import gift.product.entity.Order;
-import gift.product.entity.User;
-import gift.product.entity.WishList;
-import gift.product.repository.OptionRepository;
-import gift.product.repository.OrderRepository;
-import gift.product.repository.UserRepository;
-import gift.product.repository.WishListRepository;
+import gift.product.entity.*;
+import gift.product.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,17 +16,25 @@ public class OrderService {
 	private final OptionRepository optionRepository;
 	private final UserRepository userRepository;
 	private final WishListRepository wishListRepository;
+	private final KakaoTokenRepository kakaoTokenRepository;
+
+	private final KakaoService kakaoService;
+
 	public OrderService(
 		OrderRepository orderRepository,
 		OptionRepository optionRepository,
 		UserRepository userRepository,
-		WishListRepository wishListRepository
+		WishListRepository wishListRepository,
+		KakaoService kakaoService,
+		KakaoTokenRepository kakaoTokenRepository
 
 	) {
 		this.orderRepository = orderRepository;
 		this.optionRepository = optionRepository;
 		this.userRepository = userRepository;
 		this.wishListRepository = wishListRepository;
+		this.kakaoService = kakaoService;
+		this.kakaoTokenRepository = kakaoTokenRepository;
 	}
 
 
@@ -47,14 +49,11 @@ public class OrderService {
 		}
 
 		Order order = new Order(option, user, request.quantity(), request.message());
+		KakaoToken kakaoToken = kakaoTokenRepository.findByUser(user)
+				.orElseThrow(() -> new RuntimeException("사용자에 대한 카카오 토큰이 존재하지 않음..!"));
 
-		// 카카오 나에게 보내기 기능
-
-		// 들어올 곳
-
-		orderRepository.save(order);
-
-		// 위시리스트에 아이템 존재하면 제거
+		Order saved = orderRepository.save(order);
+		kakaoService.sendOrderToKakao(kakaoToken.getAccessToken(), saved);
 		wishListRepository.findByUserAndItem(user, option.getItem())
 			.ifPresent(wishListRepository::delete);
 
