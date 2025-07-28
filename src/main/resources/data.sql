@@ -1,6 +1,6 @@
 -- users 데이터
 INSERT INTO users (nickname, oauth_id) VALUES
-('이시웅', 15),
+('이시웅', 4364426067),
 ('카카오', 13);
 
 -- item 데이터 (user_id 포함)
