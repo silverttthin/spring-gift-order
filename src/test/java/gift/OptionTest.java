@@ -27,18 +27,11 @@ public class OptionTest {
 	@Autowired
 	private ItemRepository itemRepository;
 
-	private User loginedUser;
 	private Item foundItem;
 
 	@BeforeEach
 	void setUp() {
-		User user = new User("c@c", "1533", "테스트용 유저");
-		loginedUser = userRepository.save(user);
 		foundItem = itemRepository.findById(1L).get();
-		assertAll(
-			() -> assertThat(loginedUser).isNotNull(),
-			() -> assertThat(loginedUser.getEmail()).isEqualTo(user.getEmail())
-		);
 	}
 
 	@Test
