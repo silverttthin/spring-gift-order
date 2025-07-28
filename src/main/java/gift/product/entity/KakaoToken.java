@@ -3,6 +3,8 @@ package gift.product.entity;
 
 import jakarta.persistence.*;
 
+import java.time.Instant;
+
 
 @Entity
 public class KakaoToken {
@@ -18,17 +20,25 @@ public class KakaoToken {
 
 	private String refreshToken;
 
+	private Instant accessTokenExpiresAt;
+
+	private Instant refreshTokenExpiresAt;
+
 	protected KakaoToken() {}
 
-	public KakaoToken(User user, String accessToken, String refreshToken) {
+	public KakaoToken(User user, String accessToken, String refreshToken, Instant accessTokenExpiresAt, Instant refreshTokenExpiresAt) {
 		this.user = user;
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
+		this.accessTokenExpiresAt = accessTokenExpiresAt;
+		this.refreshTokenExpiresAt = refreshTokenExpiresAt;
 	}
 
-	public void updateTokens(String accessToken, String refreshToken) {
+	public void updateTokens(String accessToken, String refreshToken, Instant accessTokenExpiresAt, Instant refreshTokenExpiresAt) {
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
+		this.accessTokenExpiresAt = accessTokenExpiresAt;
+		this.refreshTokenExpiresAt = refreshTokenExpiresAt;
 	}
 
 	public User getUser() {
