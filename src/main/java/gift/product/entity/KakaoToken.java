@@ -26,23 +26,49 @@ public class KakaoToken {
 
 	protected KakaoToken() {}
 
-	public KakaoToken(User user, String accessToken, String refreshToken, Instant accessTokenExpiresAt, Instant refreshTokenExpiresAt) {
+	public KakaoToken(User user, String accessToken, String refreshToken, Integer accessTokenExpiresAt, Integer refreshTokenExpiresAt) {
 		this.user = user;
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
-		this.accessTokenExpiresAt = accessTokenExpiresAt;
-		this.refreshTokenExpiresAt = refreshTokenExpiresAt;
+		this.accessTokenExpiresAt = Instant.ofEpochSecond(accessTokenExpiresAt);
+		this.refreshTokenExpiresAt = Instant.ofEpochSecond(refreshTokenExpiresAt);
 	}
 
-	public void updateTokens(String accessToken, String refreshToken, Instant accessTokenExpiresAt, Instant refreshTokenExpiresAt) {
+	public void updateTokens(String accessToken, String refreshToken, Integer accessTokenExpiresAt, Integer refreshTokenExpiresAt) {
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
-		this.accessTokenExpiresAt = accessTokenExpiresAt;
-		this.refreshTokenExpiresAt = refreshTokenExpiresAt;
+		this.accessTokenExpiresAt = Instant.ofEpochSecond(accessTokenExpiresAt);
+		this.refreshTokenExpiresAt = Instant.ofEpochSecond(refreshTokenExpiresAt);
 	}
 
+
+	public Long getId() {
+		return id;
+	}
+
+
 	public User getUser() {
-		return this.user;
+		return user;
+	}
+
+
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+
+	public String getRefreshToken() {
+		return refreshToken;
+	}
+
+
+	public Instant getAccessTokenExpiresAt() {
+		return accessTokenExpiresAt;
+	}
+
+
+	public Instant getRefreshTokenExpiresAt() {
+		return refreshTokenExpiresAt;
 	}
 
 }
