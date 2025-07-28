@@ -2,9 +2,11 @@ package gift.product.service;
 
 
 import gift.product.dto.CreateUserRequest;
+import gift.product.dto.GetKakaoUserInfoResponse;
 import gift.product.dto.LoginRequest;
 import gift.product.dto.LoginResponse;
 import gift.product.entity.User;
+import gift.product.repository.KakaoTokenRepository;
 import gift.product.repository.UserRepository;
 import gift.product.commons.utils.JwtUtil;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 
 
 @Service
@@ -20,28 +21,29 @@ import java.util.Optional;
 public class UserService {
 
 	private final UserRepository userRepository;
+	private final KakaoService kakaoService;
 	private final JwtUtil jwtUtil;
-	private final PasswordEncoder passwordEncoder;
 
 
-	public UserService(UserRepository userRepository, JwtUtil jwtUtil, PasswordEncoder passwordEncoder) {
+	public UserService(
+		UserRepository userRepository,
+		KakaoService kakaoService,
+		JwtUtil jwtUtil
+	) {
 		this.userRepository = userRepository;
+		this.kakaoService = kakaoService;
 		this.jwtUtil = jwtUtil;
-		this.passwordEncoder = passwordEncoder;
 	}
 
 	public Long register(CreateUserRequest req) {
-		if(userRepository.findByEmail(req.email()).isPresent()){
-			throw new DataIntegrityViolationException("이미 사용중인 이메일입니다.");
+		String accessToken = kakaoService.getKakaoToken(req.code()).accessToken();
+		GetKakaoUserInfoResponse userInfo = kakaoService.getKakaoUserInfo(accessToken);
+
+		if(userRepository.findByOauthId(userInfo.id()).isPresent()){
+			throw new DataIntegrityViolationException("이미 동일한 카카오 아이디로 가입한 유저입니다.");
 		}
 
-		if(userRepository.findByNickname(req.nickName()).isPresent()){
-			throw new DataIntegrityViolationException("이미 사용중인 닉네임입니다.");
-		}
-
-		String encodedPassword = passwordEncoder.encode(req.password());
-
-		User user = new User(req.email(), encodedPassword, req.nickName());
+		User user = new User(userInfo.kakaoAccount().profile().nickname(), userInfo.id());
 		User saved = userRepository.save(user);
 		return saved.getId();
 
@@ -49,15 +51,12 @@ public class UserService {
 
 
 	public LoginResponse login(LoginRequest req) {
-		Optional<User> user = userRepository.findByEmail(req.email());
+		String accessToken = kakaoService.getKakaoToken(req.code()).accessToken();
+		GetKakaoUserInfoResponse userInfo = kakaoService.getKakaoUserInfo(accessToken);
+		User foundUser = userRepository.findByOauthId(userInfo.id())
+			.orElseThrow(() -> new IllegalArgumentException("미가입 유저입니다. 회원가입해주세요."));
 
-		if(user.isEmpty() || !passwordEncoder.matches(req.password(), user.get().getPassword())){
-			throw new IllegalArgumentException("이메일 또는 비밀번호가 잘못됐습니다.");
-		}
-
-		User foundUser = user.get();
 		String token = jwtUtil.generateToken(foundUser);
-
 		return new LoginResponse(token);
 	}
 
