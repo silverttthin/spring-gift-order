@@ -12,21 +12,23 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String email;
-
-	private String password;
-
 	private String nickname;
 
-	public User(Long id, String email, String password, String nickname) {
+	private Long oauthId;
+
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+	private KakaoToken kakaoToken;
+
+	public User(Long id, String nickname, Long oauthId) {
 		this.id = id;
-		this.email = email;
-		this.password = password;
 		this.nickname = nickname;
+		this.oauthId = oauthId;
 	}
 
-	public User(String email, String password, String nickname) {
-		this(null, email, password, nickname);
+	public User(String nickname, Long oauthId) {
+		// 팩토리 메서드로서 속성에 대한 검증 들어갈 곳
+
+		this(null, nickname, oauthId);
 	}
 
 	protected User() {}
@@ -35,16 +37,12 @@ public class User {
 		return id;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
 	public String getNickname() {
 		return nickname;
+	}
+
+	public Long getOauthId() {
+		return oauthId;
 	}
 
 }

@@ -32,13 +32,9 @@ public class WishTest {
 
 	@BeforeEach
 	void setUp() {
-		User user = new User("c@c", "1533", "테스트용 유저");
-		loginedUser = userRepository.save(user);
+		loginedUser = new User("testnickname", 123L);
+		userRepository.save(loginedUser);
 		foundItem = itemRepository.findById(1L).get();
-		assertAll(
-			() -> assertThat(loginedUser).isNotNull(),
-			() -> assertThat(loginedUser.getEmail()).isEqualTo(user.getEmail())
-		);
 	}
 
 	@Test
