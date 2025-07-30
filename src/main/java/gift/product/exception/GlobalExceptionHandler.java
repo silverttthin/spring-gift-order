@@ -43,11 +43,4 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.CONFLICT)
 			.body(new ErrorResponse(HttpStatus.CONFLICT.value(), e.getMessage()));
 	}
-
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErrorResponse> handlerServerErrors(Exception e) {
-		return ResponseEntity.status(HttpStatus
-			.INTERNAL_SERVER_ERROR)
-			.body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage()));
-	}
 }

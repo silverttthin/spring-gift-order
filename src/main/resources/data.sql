@@ -1,7 +1,7 @@
 -- users 데이터
-INSERT INTO users (email, password, nickname) VALUES
-('s@s', '$2a$10$I8HkGQtGiBcz8PR.xahV.uj96YCqL1pJhZk6t9cR70G.v.TdKp/vC', '이시웅'),
-('t@t', '$2a$10$I8HkGQtGiBcz8PR.xahV.uj96YCqL1pJhZk6t9cR70G.v.TdKp/vC', '카카오');
+INSERT INTO users (nickname, oauth_id) VALUES
+('이시웅', 4364426067),
+('카카오', 13);
 
 -- item 데이터 (user_id 포함)
 INSERT INTO item (name, price, image_url, user_id) VALUES
@@ -36,6 +36,6 @@ INSERT INTO wish_list (user_id, item_id, amount) VALUES
  (2, 7, 1);
 
 INSERT INTO option (option_name, quantity, item_id) VALUES
-('옵션1', 1, 1),
-('옵션2', 1, 1),
-('옵션3', 1, 1);
+('옵션1', 3, 1),
+('옵션2', 2, 1),
+('옵션3', 0, 1);
