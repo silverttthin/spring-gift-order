@@ -1,5 +1,8 @@
-FROM ubuntu:latest
+FROM openjdk:24-jdk-slim
+
 ARG JAR_FILE=build/libs/*.jar
 COPY ${JAR_FILE} app.jar
-# 도커 컨테이너를 시작할 때 실행할 명령어
+
+EXPOSE 8080
+
 ENTRYPOINT ["java","-jar","/app.jar"]
